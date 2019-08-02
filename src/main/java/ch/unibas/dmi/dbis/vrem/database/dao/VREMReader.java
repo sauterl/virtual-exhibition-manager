@@ -1,5 +1,6 @@
 package ch.unibas.dmi.dbis.vrem.database.dao;
 
+import ch.unibas.dmi.dbis.vrem.database.codec.ExhibitionCodec;
 import ch.unibas.dmi.dbis.vrem.model.exhibition.Exhibit;
 import ch.unibas.dmi.dbis.vrem.model.exhibition.Exhibition;
 
@@ -31,12 +32,16 @@ public class VREMReader extends VREMDao {
      * @return
      */
     public Exhibition getExhibition(ObjectId id) {
-        return getExhibition(id.toString());
+        return getExhibition(ExhibitionCodec.FIELD_NAME_ID, id);
     }
 
-    public Exhibition getExhibition(String id){
+    public Exhibition getExhibition(String key){
+        return getExhibition(ExhibitionCodec.FIELD_NAME_KEY, key);
+    }
+
+    private Exhibition getExhibition(String fieldName, Object key){
         final MongoCollection<Exhibition> exhibitions = this.database.getCollection(EXHIBITION_COLLECTION, Exhibition.class);
-        return exhibitions.find(Filters.eq("_id",id)).first();
+        return exhibitions.find(Filters.eq(fieldName,key)).first();
     }
 
     /**

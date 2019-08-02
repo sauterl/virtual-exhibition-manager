@@ -5,6 +5,7 @@ import org.bson.types.ObjectId;
 public class ExhibitionSummary {
     public String objectId;
 
+
     public String name;
 
     /**

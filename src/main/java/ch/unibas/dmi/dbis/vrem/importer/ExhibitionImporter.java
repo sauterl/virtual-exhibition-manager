@@ -97,8 +97,8 @@ public class ExhibitionImporter implements Runnable {
     @Option(title = "Exhibition-Description", name = {"--description"}, description = "Description of the exhibition to be imported")
     private String exhibitionDescription = "";
 
-    @Option(title = "Exhibition-ID", name = {"--id"}, description = "ID of the exhibition to be imported")
-    private String id = null;
+    @Option(title = "Exhibition-Key", name = {"--key"}, description = "Key of the exhibition to be imported, i.e. human readable key")
+    private String key = null;
 
     private Gson gson;
 
@@ -152,8 +152,8 @@ public class ExhibitionImporter implements Runnable {
             }
 
             Exhibition exhibition;
-            if (id != null) {
-                exhibition = new Exhibition(id, exhibitionName, exhibitionDescription);
+            if (key != null) {
+                exhibition = new Exhibition(key, exhibitionName, exhibitionDescription);
             } else {
                 exhibition = new Exhibition(exhibitionName, exhibitionDescription);
             }

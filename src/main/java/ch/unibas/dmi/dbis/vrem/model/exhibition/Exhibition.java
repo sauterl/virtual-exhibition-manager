@@ -8,20 +8,23 @@ import org.bson.types.ObjectId;
 public class Exhibition {
 
 
-    public final String id;
+    public final ObjectId id;
 
     public final String name;
+
+    public final String key;
 
     public final String description;
 
     private final List<Room> rooms = new ArrayList<>();
 
     public Exhibition(ObjectId id, String name, String description) {
-        this(id.toString(), name, description);
+        this(id, name.replace(' ', '-'), name, description);
     }
 
-    public Exhibition(String id, String name, String description) {
+    public Exhibition(ObjectId id, String key, String name, String description) {
         this.id = id;
+        this.key = key;
         this.name = name;
         this.description = description;
     }
@@ -30,6 +33,9 @@ public class Exhibition {
         this(new ObjectId(), name, description);
     }
 
+    public Exhibition(String key, String name, String description){
+        this(new ObjectId(), key, name, description);
+    }
 
     public boolean addRoom(Room room) {
         if (!this.rooms.contains(room)) {

@@ -6,6 +6,7 @@ import ch.unibas.dmi.dbis.vrem.server.handlers.basic.ParsingActionHandler;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.types.ObjectId;
 
 public class LoadExhibitionHandler extends ParsingActionHandler<Exhibition> {
 
@@ -21,7 +22,7 @@ public class LoadExhibitionHandler extends ParsingActionHandler<Exhibition> {
 
     @Override
     public Exhibition doGet(Map<String, String> parameters) {
-        final String objectId = parameters.get(ATTRIBUTE_ID);
+        final ObjectId objectId = new ObjectId(parameters.get(ATTRIBUTE_ID));
         LOGGER.debug("Loading exhibition {}", objectId);
         Exhibition exhibition = this.reader.getExhibition(objectId);
         if (exhibition == null) {

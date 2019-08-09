@@ -5,6 +5,7 @@ import ch.unibas.dmi.dbis.vrem.database.codec.VREMCodecProvider;
 import ch.unibas.dmi.dbis.vrem.database.dao.VREMReader;
 import ch.unibas.dmi.dbis.vrem.database.dao.VREMWriter;
 import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.ListExhibitionsHandler;
+import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.ListExhibitsHandler;
 import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.LoadExhibitionHandler;
 import ch.unibas.dmi.dbis.vrem.server.handlers.content.RequestContentHandler;
 import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.SaveExhibitionHandler;
@@ -62,6 +63,7 @@ public class WebServer implements Runnable {
             /* Register routes. */
             get("/content/get/:path", new RequestContentHandler(docRoot));
             get("/exhibitions/list", new ListExhibitionsHandler(reader));
+            get("/exhibitions/exhibits", new ListExhibitsHandler(reader));
             get("/exhibitions/load/:id", new LoadExhibitionHandler(reader));
             post("/exhibitions/save", new SaveExhibitionHandler(writer));
 

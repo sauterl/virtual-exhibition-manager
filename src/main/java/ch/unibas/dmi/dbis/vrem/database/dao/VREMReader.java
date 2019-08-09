@@ -56,6 +56,13 @@ public class VREMReader extends VREMDao {
         }
         return list;
     }
+
+    public List<Exhibit> listExhibits() {
+        final MongoCollection<Document> exhibitions = database.getCollection(EXHIBITION_COLLECTION);
+        final List<Exhibit> list = new ArrayList<>();
+        // query to find exhibits
+        return list;
+    }
 }
 
 

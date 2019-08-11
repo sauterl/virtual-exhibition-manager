@@ -13,6 +13,7 @@ import com.mongodb.client.model.Projections;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +61,9 @@ public class VREMReader extends VREMDao {
     public List<Exhibit> listExhibits() {
         final MongoCollection<Document> exhibitions = database.getCollection(EXHIBITION_COLLECTION);
         final List<Exhibit> list = new ArrayList<>();
+        for (Exhibit e : exhibitions.distinct("rooms.walls.exhibits", Exhibit.class)) {
+            list.add(e);
+        }
         // query to find exhibits
         return list;
     }

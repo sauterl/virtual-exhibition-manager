@@ -63,7 +63,7 @@ public class WebServer implements Runnable {
             /* Register routes. */
             get("/content/get/:path", new RequestContentHandler(docRoot));
             get("/exhibitions/list", new ListExhibitionsHandler(reader));
-            get("/exhibitions/exhibits", new ListExhibitsHandler(reader));
+            get("/exhibits/list", new ListExhibitsHandler(reader));
             get("/exhibitions/load/:id", new LoadExhibitionHandler(reader));
             post("/exhibitions/save", new SaveExhibitionHandler(writer));
 

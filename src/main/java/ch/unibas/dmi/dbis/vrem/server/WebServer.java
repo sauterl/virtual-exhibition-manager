@@ -4,10 +4,7 @@ import ch.unibas.dmi.dbis.vrem.config.Config;
 import ch.unibas.dmi.dbis.vrem.database.codec.VREMCodecProvider;
 import ch.unibas.dmi.dbis.vrem.database.dao.VREMReader;
 import ch.unibas.dmi.dbis.vrem.database.dao.VREMWriter;
-import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.ListExhibitionsHandler;
-import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.LoadExhibitionHandler;
-import ch.unibas.dmi.dbis.vrem.server.handlers.content.RequestContentHandler;
-import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.SaveExhibitionHandler;
+import com.beerboy.ss.SparkSwagger;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.google.gson.Gson;
@@ -16,17 +13,15 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import org.bson.codecs.configuration.CodecRegistries;
-import org.bson.codecs.configuration.CodecRegistry;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import spark.Spark;
-
-import static spark.Spark.*;
+import java.util.Collections;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import spark.Service;
 
 
 @Command(name = "server", description = "Start the web server")
@@ -52,24 +47,19 @@ public class WebServer implements Runnable {
             final VREMWriter writer = new VREMWriter(db);
 
             /* Set port. */
-            port(config.server.getPort());
+            final Service spark = Service.ignite().port(config.server.getPort());
+
 
             final Path docRoot = config.server.getDocumentRoot();
             if (!Files.exists(docRoot)) {
                 throw new IOException("DocumentRoot does not exist.");
             }
 
-            /* Register routes. */
-            get("/content/get/:path", new RequestContentHandler(docRoot));
-            get("/exhibitions/list", new ListExhibitionsHandler(reader));
-            get("/exhibitions/load/:id", new LoadExhibitionHandler(reader));
-            post("/exhibitions/save", new SaveExhibitionHandler(writer));
+            /* Setup OpenApi doc */
+            SparkSwagger.of(spark).endpoints(() -> Collections
+                .singletonList(new VREMEndpoint(reader, writer, docRoot)))
+                .generateDoc();
 
-            /* Configure the result after processing was completed. */
-            after((request, response) -> {
-                response.header("Access-Control-Allow-Origin", "*");
-                response.header("Access-Control-Allow-Headers", "*");
-            });
         } catch (IOException e) {
             e.printStackTrace();
         }

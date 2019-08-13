@@ -1,6 +1,7 @@
 package ch.unibas.dmi.dbis.vrem.database.codec;
 
 import ch.unibas.dmi.dbis.vrem.model.Vector3f;
+import ch.unibas.dmi.dbis.vrem.model.collection.ArtCollection;
 import ch.unibas.dmi.dbis.vrem.model.exhibition.Exhibit;
 import ch.unibas.dmi.dbis.vrem.model.exhibition.Exhibition;
 import ch.unibas.dmi.dbis.vrem.model.exhibition.Room;
@@ -25,6 +26,8 @@ public class VREMCodecProvider implements CodecProvider {
             return (Codec<T>)new CulturalHeritageObjectCodec(registry);
         } else if (clazz == Vector3f.class) {
             return (Codec<T>)new VectorCodec(registry);
+        } else if (clazz == ArtCollection.class) {
+            return (Codec<T>)new ArtCollectionCodec(registry);
         }
         return null;
     }

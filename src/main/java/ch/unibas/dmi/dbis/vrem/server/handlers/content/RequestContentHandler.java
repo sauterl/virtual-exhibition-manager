@@ -48,6 +48,8 @@ public class RequestContentHandler implements Route {
         /* Prepare response. */
         response.type(Files.probeContentType(absolute));
         response.header("Transfer-Encoding", "identity");
+        response.header("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Headers", "*");
         /* Transfer data. */
         try (final InputStream in = Files.newInputStream(absolute, StandardOpenOption.READ); final OutputStream out = response.raw().getOutputStream()) {
             int length = fastCopy(in, out);

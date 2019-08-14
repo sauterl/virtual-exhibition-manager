@@ -1,11 +1,17 @@
 package ch.unibas.dmi.dbis.vrem.database.dao;
 
+import ch.unibas.dmi.dbis.vrem.model.collection.ArtCollection;
+import ch.unibas.dmi.dbis.vrem.model.collection.ExhibitUpload;
 import ch.unibas.dmi.dbis.vrem.model.exhibition.Exhibition;
 
+import com.mongodb.DBObject;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 public class VREMWriter extends VREMDao {
@@ -31,5 +37,14 @@ public class VREMWriter extends VREMDao {
             return false;
         }
         return true;
+    }
+    public boolean uploadExhibit(ExhibitUpload exhibitUpload) {
+        final MongoCollection<ArtCollection> mongoCollection = this.database.getCollection(CORPUS_COLLECTION, ArtCollection.class);
+        UpdateResult result = mongoCollection.updateOne(Filters.eq("name", exhibitUpload.artCollection), Updates.addToSet("exhibits", exhibitUpload.exhibit));
+        if (result.getModifiedCount() == 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

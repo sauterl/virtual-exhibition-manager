@@ -9,6 +9,7 @@ import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.ListExhibitsHandler;
 import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.LoadExhibitionHandler;
 import ch.unibas.dmi.dbis.vrem.server.handlers.content.RequestContentHandler;
 import ch.unibas.dmi.dbis.vrem.server.handlers.exhibition.SaveExhibitionHandler;
+import ch.unibas.dmi.dbis.vrem.server.handlers.collection.UploadExhibitHandler;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
 import com.google.gson.Gson;
@@ -66,6 +67,7 @@ public class WebServer implements Runnable {
             get("/exhibits/list", new ListExhibitsHandler(reader));
             get("/exhibitions/load/:id", new LoadExhibitionHandler(reader));
             post("/exhibitions/save", new SaveExhibitionHandler(writer));
+            post("/exhibits/upload", new UploadExhibitHandler(writer));
 
             /* Configure the result after processing was completed. */
             after((request, response) -> {

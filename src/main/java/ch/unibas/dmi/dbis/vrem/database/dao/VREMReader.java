@@ -64,7 +64,15 @@ public class VREMReader extends VREMDao {
         for (Exhibit e : exhibitions.distinct("rooms.walls.exhibits", Exhibit.class)) {
             list.add(e);
         }
-        // query to find exhibits
+
+        /* Query to list exhibits from "classics" artCollection
+        final MongoCollection<Document> artCollections = database.getCollection(CORPUS_COLLECTION);
+        final Document artCollection = artCollections.find(Filters.eq("name", "classics")).first();
+        final List<Exhibit> list = new ArrayList<>();
+        for (Exhibit e : (List<Exhibit>) artCollection.get("exhibits", Exhibit.class)) {
+            list.add(e);
+        }
+        */
         return list;
     }
 }

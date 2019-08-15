@@ -2,6 +2,7 @@ package ch.unibas.dmi.dbis.vrem.database.dao;
 
 import ch.unibas.dmi.dbis.vrem.model.collection.ArtCollection;
 import ch.unibas.dmi.dbis.vrem.model.collection.ExhibitUpload;
+import ch.unibas.dmi.dbis.vrem.model.exhibition.Exhibit;
 import ch.unibas.dmi.dbis.vrem.model.exhibition.Exhibition;
 
 import com.mongodb.client.MongoCollection;
@@ -9,6 +10,8 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -41,27 +44,32 @@ public class VREMWriter extends VREMDao {
         }
         return true;
     }
-    public boolean uploadExhibit(ExhibitUpload exhibitUpload) {
+    public String uploadExhibit(ExhibitUpload exhibitUpload) {
         final MongoCollection<ArtCollection> mongoCollection = this.database.getCollection(CORPUS_COLLECTION, ArtCollection.class);
 
+        // Construct new Exhibit to generate ID
+        Exhibit to_add = new Exhibit(
+                exhibitUpload.exhibit.name,
+                exhibitUpload.exhibit.description,
+                exhibitUpload.exhibit.path,
+                exhibitUpload.exhibit.type,
+                exhibitUpload.exhibit.position,
+                exhibitUpload.exhibit.size,
+                exhibitUpload.exhibit.audio,
+                exhibitUpload.exhibit.light
+                );
+
+        // Construct Path with ID
+        to_add.path = exhibitUpload.artCollection + "/" + to_add.id + "." + exhibitUpload.fileExtension;
+
+
         // Add Exhibit to DB
-        UpdateResult result = mongoCollection.updateOne(Filters.eq("name", exhibitUpload.artCollection), Updates.addToSet("exhibits", exhibitUpload.exhibit));
-        if (result.getModifiedCount() == 0) {
-            return false;
-        }
-        String inserted_id = result.getUpsertedId().toString();
+        UpdateResult result = mongoCollection.updateOne(
+                Filters.eq("name", exhibitUpload.artCollection),
+                Updates.push("exhibits", to_add)
+        );
 
-        // Save File to Disk
-        String base64Image = exhibitUpload.file.split(",")[1];
-        byte[] decodedImage = Base64.getDecoder().decode(base64Image.getBytes(StandardCharsets.UTF_8));
-        // TODO: get docRoot
-        Path destination = Paths.get(/* get docRoot + */ "/" + exhibitUpload.artCollection + "/" + inserted_id + "." + exhibitUpload.fileExtension);
-        try {
-            Files.write(destination, decodedImage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return to_add.path;
 
-        return true;
     }
 }

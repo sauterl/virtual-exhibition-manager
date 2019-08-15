@@ -67,7 +67,7 @@ public class WebServer implements Runnable {
             get("/exhibits/list", new ListExhibitsHandler(reader));
             get("/exhibitions/load/:id", new LoadExhibitionHandler(reader));
             post("/exhibitions/save", new SaveExhibitionHandler(writer));
-            post("/exhibits/upload", new UploadExhibitHandler(writer));
+            post("/exhibits/upload", new UploadExhibitHandler(writer, docRoot));
 
             /* Configure the result after processing was completed. */
             after((request, response) -> {

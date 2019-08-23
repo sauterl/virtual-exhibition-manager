@@ -9,6 +9,9 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://packagecloud.io/manusant/beerRepo/maven2"
+    }
 }
 
 dependencies {
@@ -17,6 +20,8 @@ dependencies {
 
 
     implementation group: 'com.sparkjava', name: 'spark-core', version: '2.7.2'
+
+    compile 'com.beerboy.ss:spark-swagger:1.0.0.48'
 
     ////// MongoDB
     implementation group: 'org.mongodb', name: 'mongodb-driver', version: '3.8.2'
